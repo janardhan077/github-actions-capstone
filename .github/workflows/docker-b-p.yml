@@ -49,3 +49,4 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/bookmyshow-nginx:${{ github.ref_name }}
             ${{ secrets.DOCKERHUB_USERNAME }}/bookmyshow-nginx:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/bookmyshow-nginx:${{ github.sha }}
+#mm
