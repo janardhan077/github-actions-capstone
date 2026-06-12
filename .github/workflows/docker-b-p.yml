@@ -26,7 +26,7 @@ jobs:
           push: true
           tags: |
               ${{ secrets.DOCKERHUB_USER }}/bookmyshow-frontend:${{ github.ref_name }}
-              ${{ secretsDOCKERHUB_USER }}/bookmyshow-frontend:latest
+              ${{ secrets.DOCKERHUB_USER }}/bookmyshow-frontend:latest
               ${{ secrets.DOCKERHUB_USER }}/bookmyshow-frontend:${{ github.sha }}
       - name: Build & Push to Docker Hub the backend 
         uses: docker/build-push-action@v6
