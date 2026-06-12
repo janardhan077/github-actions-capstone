@@ -21,7 +21,7 @@ jobs:
       - name: Build & Push to Docker Hub the forntend 
         uses: docker/build-push-action@v6
         with:
-          context: ./forntend
+          context: .
           file : ./forntend/Dockerfile
           push: true
           tags: |
@@ -31,7 +31,7 @@ jobs:
       - name: Build & Push to Docker Hub the backend 
         uses: docker/build-push-action@v6
         with:
-          context: ./backend
+          context: .
           file : ./backend/Dockerfile
           push: true
           tags: |
@@ -42,7 +42,7 @@ jobs:
       - name: Build & Push to Docker Hub the nginx
         uses: docker/build-push-action@v6
         with:
-          context: ./nginx
+          context: .
           file: ./nginx/Dockerfile
           push: true
           tags: |
