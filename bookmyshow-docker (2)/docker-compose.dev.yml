@@ -1,0 +1,38 @@
+version: "3.9"
+
+# ─── docker-compose.dev.yml ──────────────────────────────────────────────────
+# Run with: docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+# Overrides production settings for local development:
+#   • Hot-reload for backend (nodemon + bind mount)
+#   • Postgres + Redis ports exposed for direct access via tools (DBeaver, Redis Insight)
+#   • Skips nginx (direct port access)
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+
+  postgres:
+    ports:
+      - "5432:5432"   # Expose for DBeaver / pgAdmin / psql
+
+  redis:
+    ports:
+      - "6379:6379"   # Expose for Redis Insight / redis-cli
+
+  backend:
+    build:
+      target: development       # Use dev stage with nodemon
+    volumes:
+      - ./backend:/app          # Bind-mount source for hot-reload
+      - /app/node_modules       # Anonymous volume to prevent overwriting node_modules
+    environment:
+      NODE_ENV: development
+    ports:
+      - "5000:5000"             # Direct API access for Postman/cURL
+
+  frontend:
+    ports:
+      - "3000:80"               # Direct frontend access
+
+  nginx:
+    ports:
+      - "8080:80"               # Proxy still available on alt port

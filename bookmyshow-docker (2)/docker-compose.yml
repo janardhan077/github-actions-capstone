@@ -1,0 +1,114 @@
+version: "3.9"
+
+# ─── Named volumes ────────────────────────────────────────────────────────────
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+# ─── Custom network ───────────────────────────────────────────────────────────
+networks:
+  bms_network:
+    driver: bridge
+
+# ─── Services ─────────────────────────────────────────────────────────────────
+services:
+
+  # ── PostgreSQL ──────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:15-alpine
+    container_name: bms_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB:       ${POSTGRES_DB:-bookmyshow}
+      POSTGRES_USER:     ${POSTGRES_USER:-admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin123}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - bms_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-admin} -d ${POSTGRES_DB:-bookmyshow}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    # DO NOT expose postgres port in production — only accessible inside network
+
+  # ── Redis ───────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: bms_redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    networks:
+      - bms_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # ── Backend API ─────────────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: production
+    container_name: bms_backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV:      production
+      PORT:          5000
+      DB_HOST:       postgres
+      DB_PORT:       5432
+      DB_NAME:       ${POSTGRES_DB:-bookmyshow}
+      DB_USER:       ${POSTGRES_USER:-admin}
+      DB_PASSWORD:   ${POSTGRES_PASSWORD:-admin123}
+      REDIS_HOST:    redis
+      REDIS_PORT:    6379
+      FRONTEND_URL:  ${FRONTEND_URL:-http://localhost}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - bms_network
+    # Backend NOT exposed externally — only via nginx proxy
+
+  # ── Frontend ────────────────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: bms_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    networks:
+      - bms_network
+
+  # ── Nginx Reverse Proxy (single public entry point) ─────────────────────────
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: bms_nginx
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-80}:80"
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - bms_network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost/nginx-health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
