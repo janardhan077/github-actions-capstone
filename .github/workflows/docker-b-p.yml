@@ -21,18 +21,18 @@ jobs:
       - name: Build & Push to Docker Hub the forntend 
         uses: docker/build-push-action@v6
         with:
-          context: .
-          file : ./forntend/Dockerfile
-          push: true
-          tags: |
+            context: ./frontend
+            file: ./frontend/Dockerfile
+            push: true
+            tags: |
               ${{ secrets.DOCKERHUB_USERNAME }}/bookmyshow-frontend:${{ github.ref_name }}
               ${{ secrets.DOCKERHUB_USERNAME }}/bookmyshow-frontend:latest
               ${{ secrets.DOCKERHUB_USERNAME }}/bookmyshow-frontend:${{ github.sha }}
       - name: Build & Push to Docker Hub the backend 
         uses: docker/build-push-action@v6
         with:
-          context: .
-          file : ./backend/Dockerfile
+          context: ./backend
+          file: ./backend/Dockerfile
           push: true
           tags: |
               ${{ secrets.DOCKERHUB_USERNAME }}/bookmyshow-backend:${{ github.ref_name }}
@@ -42,7 +42,7 @@ jobs:
       - name: Build & Push to Docker Hub the nginx
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: ./nginx
           file: ./nginx/Dockerfile
           push: true
           tags: |
