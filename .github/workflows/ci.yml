@@ -1,0 +1,11 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    uses: ./.github/workflows/docker-b-p.yml
+    secrets: inherit

@@ -25,9 +25,9 @@ jobs:
           file : ./forntend/Dockerfile
           push: true
           tags: |
-              ${{ vars.DOCKERHUB_USER }}/bookmyshow-frontend:${{ github.ref_name }}
-              ${{ vars.DOCKERHUB_USER }}/bookmyshow-frontend:latest
-              ${{ vars.DOCKERHUB_USER }}/bookmyshow-frontend:${{ github.sha }}
+              ${{ secrets.DOCKERHUB_USER }}/bookmyshow-frontend:${{ github.ref_name }}
+              ${{ secretsDOCKERHUB_USER }}/bookmyshow-frontend:latest
+              ${{ secrets.DOCKERHUB_USER }}/bookmyshow-frontend:${{ github.sha }}
       - name: Build & Push to Docker Hub the backend 
         uses: docker/build-push-action@v6
         with:
@@ -35,9 +35,9 @@ jobs:
           file : ./backend/Dockerfile
           push: true
           tags: |
-              ${{ vars.DOCKERHUB_USER }}/bookmyshow-backend:${{ github.ref_name }}
-              ${{ vars.DOCKERHUB_USER }}/bookmyshow-backend:latest
-              ${{ vars.DOCKERHUB_USER }}/bookmyshow-backend:${{ github.sha }}
+              ${{ secrets.DOCKERHUB_USER }}/bookmyshow-backend:${{ github.ref_name }}
+              ${{ secrets.DOCKERHUB_USER }}/bookmyshow-backend:latest
+              ${{ secrets.DOCKERHUB_USER }}/bookmyshow-backend:${{ github.sha }}
       
       - name: Build & Push to Docker Hub the nginx
         uses: docker/build-push-action@v6
@@ -46,6 +46,6 @@ jobs:
           file: ./nginx/Dockerfile
           push: true
           tags: |
-            ${{ vars.DOCKERHUB_USER }}/bookmyshow-nginx:${{ github.ref_name }}
-            ${{ vars.DOCKERHUB_USER }}/bookmyshow-nginx:latest
-            ${{ vars.DOCKERHUB_USER }}/bookmyshow-nginx:${{ github.sha }}
+            ${{ secrets.DOCKERHUB_USER }}/bookmyshow-nginx:${{ github.ref_name }}
+            ${{ secrets.DOCKERHUB_USER }}/bookmyshow-nginx:latest
+            ${{ secrets.DOCKERHUB_USER }}/bookmyshow-nginx:${{ github.sha }}
