@@ -11,6 +11,6 @@ jobs:
     secrets: inherit 
   
   deployment:
-    needs: deploy
-    uses: ./.github/workflows/deploy.yml
-    secrets: inherit
+      needs: codecheckout-build 
+      uses: ./.github/workflows/deploy.yml
+      secrets: inherit
