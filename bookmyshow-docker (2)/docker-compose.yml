@@ -1,21 +1,21 @@
 version: "3.9"
 
-# ─── Named volumes ────────────────────────────────────────────────────────────
+
 volumes:
   postgres_data:
     driver: local
   redis_data:
     driver: local
 
-# ─── Custom network ───────────────────────────────────────────────────────────
+
 networks:
   bms_network:
     driver: bridge
 
-# ─── Services ─────────────────────────────────────────────────────────────────
+
 services:
 
-  # ── PostgreSQL ──────────────────────────────────────────────────────────────
+  
   postgres:
     image: postgres:15-alpine
     container_name: bms_postgres
@@ -35,9 +35,9 @@ services:
       timeout: 5s
       retries: 5
       start_period: 20s
-    # DO NOT expose postgres port in production — only accessible inside network
+    
 
-  # ── Redis ───────────────────────────────────────────────────────────────────
+  
   redis:
     image: redis:7-alpine
     container_name: bms_redis
@@ -53,7 +53,7 @@ services:
       timeout: 3s
       retries: 5
 
-  # ── Backend API ─────────────────────────────────────────────────────────────
+  
   backend:
     build:
       context: ./backend
@@ -79,9 +79,7 @@ services:
         condition: service_healthy
     networks:
       - bms_network
-    # Backend NOT exposed externally — only via nginx proxy
-
-  # ── Frontend ────────────────────────────────────────────────────────────────
+    
   frontend:
     build:
       context: ./frontend
@@ -93,7 +91,7 @@ services:
     networks:
       - bms_network
 
-  # ── Nginx Reverse Proxy (single public entry point) ─────────────────────────
+ 
   nginx:
     build:
       context: ./nginx
