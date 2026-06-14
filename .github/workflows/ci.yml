@@ -1,4 +1,4 @@
-name: CI
+name: ci/cd 
 
 on:
   push:
@@ -6,6 +6,11 @@ on:
       - main
 
 jobs:
-  publish:
+  codecheckout-build:
     uses: ./.github/workflows/docker-b-p.yml
+    secrets: inherit 
+  
+  deployment:
+    needs: deploy
+    uses: ./.github/workflows/deploy.yml
     secrets: inherit
