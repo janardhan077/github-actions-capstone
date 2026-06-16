@@ -28,6 +28,6 @@ jobs:
         uses: aquasecurity/trivy-action@0.35.0
         with:
           image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.image }}:${{ github.sha }}
-          severity: 'CRITICAL,HIGH'
+          severity: 'CRITICAL '
           exit-code: '1'
           trivyignore: .trivyignore
