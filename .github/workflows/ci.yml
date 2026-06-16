@@ -24,6 +24,6 @@ jobs:
         secrets: inherit
   
   deployment:
-      needs: codecheckout-build 
+      needs: [trivy]
       uses: ./.github/workflows/deploy.yml
       secrets: inherit
