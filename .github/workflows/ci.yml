@@ -5,10 +5,23 @@ on:
     branches:
       - main
 
-jobs:
-  codecheckout-build:
+jobs: 
+  secrets-scan:
+        uses: ./.github/workflows/secrets-scan.yml 
+        secrets: inherit
+  
+  docker-scan:
+        uses: ./.github/workflows/docker-lint.yml
+  
+  build:
+    needs: [secrets-scan, docker-scan ]
     uses: ./.github/workflows/docker-b-p.yml
     secrets: inherit 
+
+  trivy:
+        needs: [build]
+        uses: ./.github/workflows/image-scan.yml
+        secrets: inherit
   
   deployment:
       needs: codecheckout-build 
