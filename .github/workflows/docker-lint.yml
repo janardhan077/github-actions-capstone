@@ -10,10 +10,9 @@ jobs:
     strategy:
       matrix:
         dockerfile:
-          - frontend/Dockerfile
-          - backend/Dockerfile
-          - nginx/Dockerfile
-
+        - "bookmyshow-docker (2)/backend/Dockerfile"
+        - "bookmyshow-docker (2)/frontend/Dockerfile"
+        - "bookmyshow-docker (2)/nginx/Dockerfile"
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
