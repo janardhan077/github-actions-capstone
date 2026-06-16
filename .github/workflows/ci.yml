@@ -6,7 +6,7 @@ on:
       - main
 
 jobs: 
-  copde-quality:
+  code-quality:
     uses: ./.github/workflows/code-quality.yml
   secrets-scan:
         uses: ./.github/workflows/secrets-scan.yml 
@@ -16,7 +16,7 @@ jobs:
         uses: ./.github/workflows/docker-lint.yml
   
   build:
-    needs: [ code-quality, secrets-scan, docker-scan ]
+    needs: [code-quality, secrets-scan, docker-scan ]
     uses: ./.github/workflows/docker-b-p.yml
     secrets: inherit 
 
