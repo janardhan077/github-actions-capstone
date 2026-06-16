@@ -1,16 +1,11 @@
+FROM nginx:1.29-alpine
 
-FROM nginx:1.25-alpine
-
+RUN apk update && apk upgrade --no-cache
 
 RUN rm /etc/nginx/conf.d/default.conf
 
-
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-
 COPY index.html /usr/share/nginx/html/index.html
-
-
 
 EXPOSE 80
 
